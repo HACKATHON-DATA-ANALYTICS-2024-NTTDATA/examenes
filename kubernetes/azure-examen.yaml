@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: examen
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: examen
+  template:
+    metadata:
+      labels:
+        app: examen
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: examen
+        image: carlodelgado/huawei-examenes:latest
+        env:
+        - name: FOO
+          value: "bar"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+          name: examen
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: examen
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: examen
